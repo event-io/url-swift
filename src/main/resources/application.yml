@@ -1,2 +1,17 @@
 greeting:
   message: "hello"
+
+quarkus:
+  datasource:
+
+    url_swift_write:
+      db-kind: postgresql
+      username: postgres
+      password: postgres
+      reactive.url: vertx-reactive:postgresql://localhost:5432/mydatabase
+
+    url_swift_read:
+      db-kind: postgresql
+      username: postgres
+      password: postgres
+      reactive.url: vertx-reactive:postgresql://localhost:5432/mydatabase
