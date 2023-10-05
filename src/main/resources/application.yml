@@ -29,8 +29,3 @@ quarkus:
     logging:
       scope: request-response
       body-limit: 10000
-    supabase-api:
-      #TODO: Url should be removed from here
-      url: ${SUPABASE_URL}
-      scope: jakarta.inject.Singleton
-      verify-host: true

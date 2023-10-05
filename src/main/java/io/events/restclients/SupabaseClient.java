@@ -1,27 +1,27 @@
 package io.events.restclients;
 
+import java.net.URI;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
-import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import io.events.dto.TokenRequestDTO;
 import io.events.dto.TokenResponseDTO;
-import io.events.factory.RequestUUIDHeaderFactory;
 import io.events.models.SupabaseGrantType;
 import io.quarkus.rest.client.reactive.NotBody;
+import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder;
+import io.vertx.core.Closeable;
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
+@Singleton
 @Path("/auth/v1")
-@RegisterRestClient(configKey = "supabase-api")
-@RegisterClientHeaders(RequestUUIDHeaderFactory.class)
 @ClientHeaderParam(name = "apiKey", value = "{apiKey}")
-public interface SupabaseClient {
+public interface SupabaseClient extends Closeable {
     
     @POST
     @Path("/token")
@@ -39,6 +39,12 @@ public interface SupabaseClient {
         @NotBody String accessToken,
         @NotBody String apiKey
     );
+
+    static SupabaseClient createInstance(URI uri) {
+        return QuarkusRestClientBuilder.newBuilder()
+            .baseUri(uri)
+            .build(SupabaseClient.class);
+    }
 
     //TODO: FIX Serialization of enums problems
     // @ClientObjectMapper 
