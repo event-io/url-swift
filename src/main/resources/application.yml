@@ -1,2 +1,39 @@
 greeting:
   message: "hello"
+
+
+supabase:
+  url_swift:
+    host: ${URL_SWIFT_HOST}
+    api_key: ${URL_SWIFT_API_KEY}
+    authority:
+      schema: ${URL_SWIFT_SCHEMA}
+      email: ${URL_SWIFT_EMAIL}
+      password: ${URL_SWIFT_PWD}
+
+
+  base62_key_generator:
+    host: ${B62KG_HOST}
+    api_key: ${B62KG_API_KEY}
+    authority:
+      schema: ${B62KG_SCHEMA}
+      email: ${B62KG_EMAIL}
+      password: ${B62KG_PWD}
+
+quarkus:
+  log:
+    category:
+      "org.jboss.resteasy.reactive.client.logging":
+        level: DEBUG
+  rest-client:
+    logging:
+      scope: request-response
+      body-limit: 10000
+    url_swift:
+      url: ${URL_SWIFT_HOST}
+      scope: jakarta.inject.Singleton
+      verify-host: true
+    base62_key_generator:
+      url: ${B62KG_HOST}
+      scope: jakarta.inject.Singleton
+      verify-host: true
