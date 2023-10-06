@@ -23,7 +23,7 @@ import lombok.NonNull;
 @RegisterClientHeaders(RequestUUIDHeaderFactory.class)
 @ClientHeaderParam(name = "apiKey", value = "${supabase.url_swift.api_key}")
 @ClientHeaderParam(name = "Authorization", value = "Bearer {token}") 
-public interface UrlSwiftClient {
+public interface SupabaseUrlSwiftClient {
     
     @GET
     @ClientHeaderParam(name = "Accept-Profile", value = "${supabase.url_swift.authority.schema}")
