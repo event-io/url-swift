@@ -29,3 +29,11 @@ quarkus:
     logging:
       scope: request-response
       body-limit: 10000
+    url_swift:
+      url: ${URL_SWIFT_HOST}
+      scope: jakarta.inject.Singleton
+      verify-host: true
+    base62_key_generator:
+      url: ${B62KG_HOST}
+      scope: jakarta.inject.Singleton
+      verify-host: true
