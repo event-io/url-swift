@@ -21,6 +21,7 @@ import io.smallrye.mutiny.subscription.Cancellable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class UrlSwiftService {
@@ -46,7 +47,8 @@ public class UrlSwiftService {
     void onStart(@Observes StartupEvent ev) {
         this.supabaseClient = SupabaseClient.createInstance(URI.create(supabaseUrlSwiftConfig.host()));
 
-        this.refreshTokenSubscription = this.refreshTokenEvery(supabaseUrlSwiftConfig, supabaseClient, 15)
+        //this.refreshTokenSubscription = //TODO: Check why this is not working if assigned to a variable
+        this.refreshTokenEvery(supabaseUrlSwiftConfig, supabaseClient, 15)
             .subscribe().with(
                 tokenResponse -> this.accessToken = tokenResponse.getAccessToken(),
                 failure -> new RuntimeException(failure)
@@ -54,7 +56,7 @@ public class UrlSwiftService {
     }
 
     void onStop(@Observes StartupEvent ev) {
-        this.refreshTokenSubscription.cancel();
+        // this.refreshTokenSubscription.cancel();
     }
 
     private Multi<TokenResponseDTO> refreshTokenEvery(
@@ -63,13 +65,25 @@ public class UrlSwiftService {
         int everyMinutes
     ) {
         return Multi.createFrom().ticks().every(Duration.ofMinutes(everyMinutes)).onItem()
-            .transformToUniAndConcatenate(tick ->
-                Uni.createFrom().completionStage(
+            .transformToUniAndConcatenate(tick -> Uni.createFrom().completionStage(
                     supabaseClient.token(SupabaseGrantType.password, config.apiKey(), new TokenRequestDTO(
                         config.authority().email(), config.authority().password()
                     ))
-                )
-            );
+            ));
+    }
+    
+    public Uni<String> getRedirectURL(String shortenedLink) {
+        return Uni.createFrom().completionStage(
+            this.supabaseUrlSwiftClient.getById(
+                this.accessToken,
+                shortenedLink
+            )
+        ).map(linkShorteningResponseDTO -> {
+            if (linkShorteningResponseDTO.isEmpty()) {
+                throw new NotFoundException("Not found resource URL with shortened link: " + shortenedLink);
+            }
+            return linkShorteningResponseDTO.iterator().next().getOriginalLink();
+        });
     }
 
 }
