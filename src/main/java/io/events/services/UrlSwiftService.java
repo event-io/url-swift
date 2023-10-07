@@ -8,6 +8,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import io.events.configs.SupabaseBackendConfig;
 import io.events.configs.SupabaseBase62KeyGeneratorConfig;
 import io.events.configs.SupabaseUrlSwiftConfig;
+import io.events.dto.LinkShorteningResponseDTO;
 import io.events.dto.TokenRequestDTO;
 import io.events.dto.TokenResponseDTO;
 import io.events.models.SupabaseGrantType;
@@ -74,7 +75,7 @@ public class UrlSwiftService {
     
     public Uni<String> getRedirectURL(String shortenedLink) {
         return Uni.createFrom().completionStage(
-            this.supabaseUrlSwiftClient.getById(
+            this.supabaseUrlSwiftClient.getByShortened(
                 this.accessToken,
                 shortenedLink
             )
@@ -84,6 +85,21 @@ public class UrlSwiftService {
             }
             return linkShorteningResponseDTO.iterator().next().getOriginalLink();
         });
+    }
+
+    public Uni<LinkShorteningResponseDTO> getInfo(String originalURL) {
+        return Uni.createFrom().completionStage(
+            this.supabaseUrlSwiftClient.getInfoByOriginal(
+                this.accessToken,
+                originalURL
+            )
+        ).map(linkShorteningResponseDTO -> {
+            if (linkShorteningResponseDTO.isEmpty()) {
+                throw new NotFoundException("Not found resource URL with shortened link: " + originalURL);
+            }
+            return linkShorteningResponseDTO.iterator().next();
+        });
+
     }
 
 }

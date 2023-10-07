@@ -28,9 +28,16 @@ public interface SupabaseUrlSwiftClient extends Closeable {
     
     @GET
     @ClientHeaderParam(name = "Accept-Profile", value = "${supabase.url_swift.authority.schema}")
-    CompletionStage<Set<LinkShorteningResponseDTO>> getById(
+    CompletionStage<Set<LinkShorteningResponseDTO>> getByShortened(
         @NotBody String token,
         @NonNull @QueryParam("shortened_link") String shortenedLink
+    );
+    
+    @GET
+    @ClientHeaderParam(name = "Accept-Profile", value = "${supabase.url_swift.authority.schema}")
+    CompletionStage<Set<LinkShorteningResponseDTO>> getInfoByOriginal(
+        @NotBody String token,
+        @NonNull @QueryParam("original_link") String shortenedLink
     );
 
 
