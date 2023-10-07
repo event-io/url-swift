@@ -12,6 +12,7 @@ import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
 import io.events.factory.RequestUUIDHeaderFactory;
 import io.quarkus.rest.client.reactive.NotBody;
+import io.vertx.core.Closeable;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -23,7 +24,7 @@ import lombok.NonNull;
 @RegisterClientHeaders(RequestUUIDHeaderFactory.class)
 @ClientHeaderParam(name = "apiKey", value = "${supabase.url_swift.api_key}")
 @ClientHeaderParam(name = "Authorization", value = "Bearer {token}") 
-public interface SupabaseUrlSwiftClient {
+public interface SupabaseUrlSwiftClient extends Closeable {
     
     @GET
     @ClientHeaderParam(name = "Accept-Profile", value = "${supabase.url_swift.authority.schema}")
