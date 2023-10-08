@@ -6,12 +6,12 @@ import java.util.concurrent.CompletionStage;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.reactive.RestForm;
 
 import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
 import io.events.factory.RequestUUIDHeaderFactory;
 import io.quarkus.rest.client.reactive.NotBody;
+import io.vertx.core.Closeable;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -23,13 +23,20 @@ import lombok.NonNull;
 @RegisterClientHeaders(RequestUUIDHeaderFactory.class)
 @ClientHeaderParam(name = "apiKey", value = "${supabase.url_swift.api_key}")
 @ClientHeaderParam(name = "Authorization", value = "Bearer {token}") 
-public interface SupabaseUrlSwiftClient {
+public interface SupabaseUrlSwiftClient extends Closeable {
     
     @GET
     @ClientHeaderParam(name = "Accept-Profile", value = "${supabase.url_swift.authority.schema}")
-    CompletionStage<Set<LinkShorteningResponseDTO>> getById(
+    CompletionStage<Set<LinkShorteningResponseDTO>> getByShortened(
         @NotBody String token,
         @NonNull @QueryParam("shortened_link") String shortenedLink
+    );
+    
+    @GET
+    @ClientHeaderParam(name = "Accept-Profile", value = "${supabase.url_swift.authority.schema}")
+    CompletionStage<Set<LinkShorteningResponseDTO>> getInfoByOriginal(
+        @NotBody String token,
+        @NonNull @QueryParam("original_link") String shortenedLink
     );
 
 
@@ -38,7 +45,7 @@ public interface SupabaseUrlSwiftClient {
     @ClientHeaderParam(name = "Prefer", value = "missing=default")
     CompletionStage<Void> create(
         @NotBody String token,
-        @RestForm LinkShorteningCreationDTO linkShorteningCreationDTO
+        LinkShorteningCreationDTO linkShorteningCreationDTO
     );
 
 }

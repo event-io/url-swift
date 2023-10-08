@@ -1,15 +1,19 @@
 package io.events.restclients;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 
+import io.events.configs.SupabaseBackendConfig;
 import io.events.dto.TokenRequestDTO;
 import io.events.dto.TokenResponseDTO;
 import io.events.models.SupabaseGrantType;
 import io.quarkus.rest.client.reactive.NotBody;
 import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.Closeable;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -44,6 +48,18 @@ public interface SupabaseClient extends Closeable {
         return QuarkusRestClientBuilder.newBuilder()
             .baseUri(uri)
             .build(SupabaseClient.class);
+    }
+
+    default Multi<TokenResponseDTO> refreshTokenEvery(
+        SupabaseBackendConfig config,
+        int everyMinutes
+    ) {
+        return Multi.createFrom().ticks().every(Duration.ofMinutes(everyMinutes)).onItem()
+            .transformToUniAndConcatenate(tick -> Uni.createFrom().completionStage(
+                    this.token(SupabaseGrantType.password, config.apiKey(), new TokenRequestDTO(
+                        config.authority().email(), config.authority().password()
+                    ))
+            ));
     }
 
     //TODO: FIX Serialization of enums problems
