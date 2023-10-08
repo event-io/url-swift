@@ -1,3 +1,8 @@
+/**
+ * This class provides services related to URL shortening using Supabase and Base62 key generation.
+ * 
+ * @author Luca Corallo
+*/
 package io.events.services;
 
 import java.net.URI;
@@ -40,6 +45,11 @@ public class UrlSwiftService {
 
     private Cancellable refreshTokenSubscription;
 
+    /**
+     * Method called on application startup.
+     * Initializes Supabase client and sets up token refreshing.
+     * @param ev The startup event.
+     */
     void onStart(@Observes StartupEvent ev) {
         this.supabaseClient = SupabaseClient.createInstance(URI.create(supabaseUrlSwiftConfig.host()));
 
@@ -51,10 +61,20 @@ public class UrlSwiftService {
             );
     }
 
+    /**
+     * Method called on application shutdown.
+     * Cancels token refreshing subscription.
+     * @param ev The startup event.
+     */
     void onStop(@Observes StartupEvent ev) {
         // this.refreshTokenSubscription.cancel();
     }
     
+    /**
+     * Retrieves the redirect URL for a given shortened link.
+     * @param shortenedLink The shortened link.
+     * @return A Uni that resolves to the redirect URL.
+     */
     public Uni<String> getRedirectURL(String shortenedLink) {
         return Uni.createFrom().completionStage(
             this.supabaseUrlSwiftClient.getByShortened(
@@ -69,6 +89,11 @@ public class UrlSwiftService {
         });
     }
 
+    /**
+     * Retrieves information about a shortened link.
+     * @param originalURL The original URL.
+     * @return A Uni that resolves to the link information.
+     */
     public Uni<LinkShorteningResponseDTO> getInfo(String originalURL) {
         return Uni.createFrom().completionStage(
             this.supabaseUrlSwiftClient.getInfoByOriginal(
@@ -84,6 +109,11 @@ public class UrlSwiftService {
 
     }
 
+    /**
+     * Creates a new shortened link.
+     * @param linkShorteningCreationDTO The DTO containing link information.
+     * @return A Uni that resolves to the created link.
+     */
     public Uni<LinkShorteningCreationDTO> create(LinkShorteningCreationDTO linkShorteningCreationDTO) {
         return Uni.createFrom().completionStage(
             this.base62KeyGeneratorClient.generateKey(accessToken)
