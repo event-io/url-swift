@@ -6,7 +6,6 @@ import java.util.concurrent.CompletionStage;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.reactive.RestForm;
 
 import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
@@ -46,7 +45,7 @@ public interface SupabaseUrlSwiftClient extends Closeable {
     @ClientHeaderParam(name = "Prefer", value = "missing=default")
     CompletionStage<Void> create(
         @NotBody String token,
-        @RestForm LinkShorteningCreationDTO linkShorteningCreationDTO
+        LinkShorteningCreationDTO linkShorteningCreationDTO
     );
 
 }
