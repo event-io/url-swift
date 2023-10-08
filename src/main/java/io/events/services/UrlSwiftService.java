@@ -8,6 +8,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import io.events.configs.SupabaseBackendConfig;
 import io.events.configs.SupabaseBase62KeyGeneratorConfig;
 import io.events.configs.SupabaseUrlSwiftConfig;
+import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
 import io.events.dto.TokenRequestDTO;
 import io.events.dto.TokenResponseDTO;
@@ -100,6 +101,17 @@ public class UrlSwiftService {
             return linkShorteningResponseDTO.iterator().next();
         });
 
+    }
+
+    public Uni<LinkShorteningCreationDTO> create(LinkShorteningCreationDTO linkShorteningCreationDTO) {
+        return Uni.createFrom().completionStage(
+            this.base62KeyGeneratorClient.generateKey(accessToken)
+        ).map(baseKeyDTO -> {
+            linkShorteningCreationDTO.setShortnedLink(baseKeyDTO.getKey());
+            return linkShorteningCreationDTO;
+        }).chain(key -> Uni.createFrom().completionStage(
+            this.supabaseUrlSwiftClient.create(this.accessToken, linkShorteningCreationDTO)
+        )).map(v -> linkShorteningCreationDTO);
     }
 
 }
