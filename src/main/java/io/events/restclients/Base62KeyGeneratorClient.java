@@ -22,7 +22,7 @@ public interface Base62KeyGeneratorClient extends Closeable {
     @Path("/rpc/get_key")
     @ClientHeaderParam(name = "apiKey", value = "${supabase.base62_key_generator.api_key}")
     @ClientHeaderParam(name = "Authorization", value = "Bearer {token}")
-    @ClientHeaderParam(name = "Content-Profile", value = "${supabase.url_swift.authority.schema}")
+    @ClientHeaderParam(name = "Content-Profile", value = "${supabase.base62_key_generator.authority.schema}")
     CompletionStage<Base62KeyDTO> generateKey(@NotBody String token);
 
 }
