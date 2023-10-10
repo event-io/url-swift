@@ -1,4 +1,15 @@
 # url-swift
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=bugs)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=code_smells)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=coverage)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=ncloc)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=alert_status)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=security_rating)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=sqale_index)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=event-io_url-swift&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=event-io_url-swift)
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
