@@ -17,6 +17,7 @@ import io.smallrye.mutiny.Uni;
 import io.vertx.core.Closeable;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
@@ -32,7 +33,7 @@ public interface SupabaseClient extends Closeable {
     @Consumes(MediaType.APPLICATION_JSON)
     CompletionStage<TokenResponseDTO> token(
         @QueryParam("grant_type") SupabaseGrantType grantType,
-        @NotBody String apiKey,
+        @HeaderParam("apiKey") String apiKey,
         TokenRequestDTO tokenRequestDTO);
     
     
