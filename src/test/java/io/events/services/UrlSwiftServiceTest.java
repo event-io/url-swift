@@ -16,12 +16,15 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
 import io.events.dto.TokenRequestDTO;
 import io.events.exceptions.OriginalUrlMatchException;
 import io.events.exceptions.RedirectUrlMatchException;
+import io.events.mocks.MockBase62KeyGeneratorClient;
 import io.events.mocks.MockSupabaseClient;
 import io.events.mocks.MockSupabaseUrlSwiftClient;
+import io.events.restclients.Base62KeyGeneratorClient;
 import io.events.restclients.SupabaseClient;
 import io.events.restclients.SupabaseUrlSwiftClient;
 import io.quarkus.test.InjectMock;
@@ -37,6 +40,10 @@ public class UrlSwiftServiceTest {
     @InjectMock
     @RestClient
     private SupabaseUrlSwiftClient mockSupabaseUrlSwiftClient;
+
+    @InjectMock
+    @RestClient
+    private Base62KeyGeneratorClient mockBase62KeyGeneratorClient; 
 
     @Inject
     private UrlSwiftService urlSwiftService;
@@ -165,7 +172,34 @@ public class UrlSwiftServiceTest {
 
     @Test
     public void testCreateShortenedURL_shouldReceiveURL() {
-        fail("Not yet implemented");
+        //Mock
+        when(mockBase62KeyGeneratorClient.generateKey(""))
+            .thenReturn(MockBase62KeyGeneratorClient.mockKeyGenerationResponseHappyPath());
+
+        when(mockSupabaseUrlSwiftClient.create(
+            "",
+            MockSupabaseUrlSwiftClient.LINK_SHORTENING_CREATION_DTO_HAPPY_PATH
+        )).thenReturn(MockSupabaseUrlSwiftClient.mockCreateResponseHappyPath());
+
+        //Assing
+        LinkShorteningCreationDTO happyPathLinkShorteningCreationDTO = new LinkShorteningCreationDTO(
+            "http://example-mock.com/1", null
+        );
+        String happyPathShortenedUrl = "LCZZZ99";
+
+        //Act
+        LinkShorteningCreationDTO linkShorteningCreationDTO = null;
+        try {
+            linkShorteningCreationDTO = urlSwiftService.create(happyPathLinkShorteningCreationDTO)
+                .subscribeAsCompletionStage().get();
+        } catch (InterruptedException|ExecutionException e) {
+            fail("Should not fail");
+        }
+
+        //Assert
+        assertNotNull(linkShorteningCreationDTO, "Should not be null");
+        assertEquals(linkShorteningCreationDTO.getOriginalLink(), happyPathLinkShorteningCreationDTO.getOriginalLink(), "Should originalLink be equal");
+        assertEquals(linkShorteningCreationDTO.getShortnedLink(), happyPathShortenedUrl, "Should shortenedLink be equal");
     }
 
     @Test

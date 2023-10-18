@@ -7,10 +7,15 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
+import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
 import io.smallrye.mutiny.Uni;
 
 public class MockSupabaseUrlSwiftClient {
+
+    public static final LinkShorteningCreationDTO LINK_SHORTENING_CREATION_DTO_HAPPY_PATH = new LinkShorteningCreationDTO(
+        "http://example-mock.com/1", "LCZZZ99"
+    );
 
     public static final String SHORTNED_LINK_HAPPY_PATH = "ABCDE01"; 
     public static final String ORIGINAL_LINK_HAPPY_PATH = "http://example-mock.com/1";
@@ -29,6 +34,10 @@ public class MockSupabaseUrlSwiftClient {
     public static CompletionStage<Set<LinkShorteningResponseDTO>> mockGetByShortenedResponseSadPath() {
         Set<LinkShorteningResponseDTO> emptySet = Collections.emptySet();
         return Uni.createFrom().item(emptySet).subscribeAsCompletionStage();
+    }
+
+    public static CompletionStage<Void> mockCreateResponseHappyPath() {
+        return Uni.createFrom().voidItem().subscribeAsCompletionStage();
     }
     
 }
