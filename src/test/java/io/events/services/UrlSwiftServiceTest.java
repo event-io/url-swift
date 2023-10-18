@@ -9,9 +9,11 @@ import static org.mockito.Mockito.when;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.events.dto.TokenRequestDTO;
+import io.events.exceptions.RedirectUrlMatchException;
 import io.events.mocks.MockSupabaseClient;
 import io.events.mocks.MockSupabaseUrlSwiftClient;
 import io.events.restclients.SupabaseClient;
@@ -33,16 +35,19 @@ public class UrlSwiftServiceTest {
     @Inject
     private UrlSwiftService urlSwiftService;
 
-    
-    @Test
-    public void testGetRedirectURL_shouldReceiveURL() {
+    @BeforeEach
+    public void setUp() {
         //Mock
         when(mockSupabaseClient.token(
             any(),
             any(String.class),
             any(TokenRequestDTO.class))
         ).thenReturn(MockSupabaseClient.mockTokenResponseHappyPath);
+    }
 
+    @Test
+    public void testGetRedirectURL_shouldReceiveURL() {
+        //Mock
         when(mockSupabaseUrlSwiftClient.getByShortened(
             anyString(),
             anyString()
@@ -67,7 +72,24 @@ public class UrlSwiftServiceTest {
 
     @Test
     public void testGetRedirectURL_shouldNotFound() {
-        fail("Not yet implemented");
+        //Mock        
+        when(mockSupabaseUrlSwiftClient.getByShortened(
+            anyString(),
+            anyString()
+        )).thenReturn(MockSupabaseUrlSwiftClient.mockGetByShortenedResponseSadPath());
+
+        //Assign
+        String shortenedUrl = "ABCDE01";
+        
+        //Act
+        try {
+            urlSwiftService.getRedirectURL(shortenedUrl)
+            .subscribeAsCompletionStage().get();
+            fail("Should be thrown an exception");
+        } catch (InterruptedException|ExecutionException e) {
+            RuntimeException exception = (RuntimeException) e.getCause();
+            assertEquals(RedirectUrlMatchException.class, exception.getCause().getClass(), "Should be equal");
+        }
     }
 
     @Test
