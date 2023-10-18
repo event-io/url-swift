@@ -13,6 +13,7 @@ import io.events.configs.SupabaseBase62KeyGeneratorConfig;
 import io.events.configs.SupabaseUrlSwiftConfig;
 import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
+import io.events.exceptions.OriginalUrlMatchException;
 import io.events.exceptions.RedirectUrlMatchException;
 import io.events.restclients.Base62KeyGeneratorClient;
 import io.events.restclients.SupabaseClient;
@@ -24,7 +25,6 @@ import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class UrlSwiftService {
@@ -100,12 +100,10 @@ public class UrlSwiftService {
                 this.accessToken,
                 originalURL
             )
-        ).map(linkShorteningResponseDTO -> {
-            if (linkShorteningResponseDTO.isEmpty()) {
-                throw new NotFoundException("Not found resource URL with shortened link: " + originalURL);
-            }
+        ).map(Unchecked.function(linkShorteningResponseDTO -> {
+            if (linkShorteningResponseDTO.isEmpty()) throw new OriginalUrlMatchException();
             return linkShorteningResponseDTO.iterator().next();
-        });
+        }));
 
     }
 
