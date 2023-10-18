@@ -54,20 +54,20 @@ public class UrlSwiftServiceTest {
         )).thenReturn(MockSupabaseUrlSwiftClient.mockGetByShortenedResponseHappyPath());
 
         //Assign
-        String shortenedUrl = "ABCDE01";
-        String correctOriginalUrl = "http://example-mock.com/1";
+        String happyPathShortenedUrl = "ABCDE01";
+        String happyPathCorrectOriginalUrl = "http://example-mock.com/1";
 
         //Act
         String originalUrl = "";
         try {
-            originalUrl = urlSwiftService.getRedirectURL(shortenedUrl)
+            originalUrl = urlSwiftService.getRedirectURL(happyPathShortenedUrl)
             .subscribeAsCompletionStage().get();
         } catch (InterruptedException|ExecutionException e) {
             fail("Should not fail");
         }
 
         //Assert
-        assertEquals(correctOriginalUrl, originalUrl, "Should be equal");
+        assertEquals(happyPathCorrectOriginalUrl, originalUrl, "Should be equal");
     }
 
     @Test
@@ -88,6 +88,8 @@ public class UrlSwiftServiceTest {
             fail("Should be thrown an exception");
         } catch (InterruptedException|ExecutionException e) {
             RuntimeException exception = (RuntimeException) e.getCause();
+
+            //Assert
             assertEquals(RedirectUrlMatchException.class, exception.getCause().getClass(), "Should be equal");
         }
     }
