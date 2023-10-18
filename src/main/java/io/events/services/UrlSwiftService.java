@@ -41,7 +41,7 @@ public class UrlSwiftService {
 
     private SupabaseClient supabaseClient;
 
-    private String accessToken;
+    private String accessToken = ""; //Assigned only for testing purposes
 
     private Cancellable refreshTokenSubscription;
 

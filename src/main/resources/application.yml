@@ -34,15 +34,19 @@ quarkus:
     base62_key_generator:
       url: ${B62KG_HOST}
       verify-host: true
+    supabase_auth:
+      url: _ #Insert only for test purpose. In dev and prod the value is set dynamically.
 
 "%dev":
   quarkus:
     rest-client:
+      supabase_auth.scope: jakarta.inject.Singleton
       url_swift.scope: jakarta.inject.Singleton
       base62_key_generator.scope: jakarta.inject.Singleton
 
 "%test":
   quarkus:
     rest-client:
+      supabase_auth.scope: jakarta.enterprise.context.ApplicationScoped
       url_swift.scope: jakarta.enterprise.context.ApplicationScoped
       base62_key_generator.scope: jakarta.enterprise.context.ApplicationScoped
