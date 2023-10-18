@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import io.events.dto.LinkShorteningResponseDTO;
 import io.events.dto.TokenRequestDTO;
+import io.events.exceptions.OriginalUrlMatchException;
 import io.events.exceptions.RedirectUrlMatchException;
 import io.events.mocks.MockSupabaseClient;
 import io.events.mocks.MockSupabaseUrlSwiftClient;
@@ -66,7 +67,7 @@ public class UrlSwiftServiceTest {
         String originalUrl = "";
         try {
             originalUrl = urlSwiftService.getRedirectURL(happyPathShortenedUrl)
-            .subscribeAsCompletionStage().get();
+                .subscribeAsCompletionStage().get();
         } catch (InterruptedException|ExecutionException e) {
             fail("Should not fail");
         }
@@ -89,7 +90,7 @@ public class UrlSwiftServiceTest {
         //Act
         try {
             urlSwiftService.getRedirectURL(shortenedUrl)
-            .subscribeAsCompletionStage().get();
+                .subscribeAsCompletionStage().get();
             fail("Should be thrown an exception");
         } catch (InterruptedException|ExecutionException e) {
             RuntimeException exception = (RuntimeException) e.getCause();
@@ -121,7 +122,7 @@ public class UrlSwiftServiceTest {
         LinkShorteningResponseDTO shorteningResponseDTO = null;
         try {
             shorteningResponseDTO = urlSwiftService.getInfo(happyPathCorrectOriginalUrl)
-            .subscribeAsCompletionStage().get();
+                .subscribeAsCompletionStage().get();
         } catch (InterruptedException|ExecutionException e) {
             fail("Should not fail");
         }
@@ -135,7 +136,26 @@ public class UrlSwiftServiceTest {
 
     @Test
     public void testGetInfo_shouldNotFound() {
-        fail("Not yet implemented");
+        //Mock        
+        when(mockSupabaseUrlSwiftClient.getInfoByOriginal(
+            anyString(),
+            anyString()
+        )).thenReturn(MockSupabaseUrlSwiftClient.mockGetByShortenedResponseSadPath());
+
+        //Assign
+        String originalUrl = "http://example-mock.com/1";
+        
+        //Act
+        try {
+            urlSwiftService.getInfo(originalUrl)
+                .subscribeAsCompletionStage().get();
+            fail("Should be thrown an exception");
+        } catch (InterruptedException|ExecutionException e) {
+            RuntimeException exception = (RuntimeException) e.getCause();
+
+            //Assert
+            assertEquals(OriginalUrlMatchException.class, exception.getCause().getClass(), "Should be equal");
+        }
     }
 
     @Test
