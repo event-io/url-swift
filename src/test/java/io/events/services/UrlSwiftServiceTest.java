@@ -30,6 +30,7 @@ import io.events.restclients.SupabaseUrlSwiftClient;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import jakarta.validation.ConstraintViolationException;
 @QuarkusTest
 public class UrlSwiftServiceTest {
 
@@ -204,7 +205,28 @@ public class UrlSwiftServiceTest {
 
     @Test
     public void testCreateShortenedURL_shouldBeInputIncorrect() {
-        fail("Not yet implemented");
+        when(mockBase62KeyGeneratorClient.generateKey(""))
+            .thenThrow(new RuntimeException("Base62KeyGenerator method should not be called"));
+
+        when(mockSupabaseUrlSwiftClient.create(anyString(), any(LinkShorteningCreationDTO.class)
+        )).thenThrow(new RuntimeException("UrlSwift creation method should not be called"));
+
+        //Assing
+        LinkShorteningCreationDTO sadPathLinkShorteningCreationDTO = new LinkShorteningCreationDTO(
+            MockSupabaseUrlSwiftClient.ORIGINAL_LINK_SAD_PATH, null
+        );
+
+        //Act
+         try {
+            urlSwiftService.create(sadPathLinkShorteningCreationDTO)
+                .subscribeAsCompletionStage().get();
+            fail("Should fail");
+        } catch (InterruptedException|ExecutionException|ConstraintViolationException e) {
+            //Assert
+            assertEquals(ConstraintViolationException.class, e.getClass(), "Should be thrown ConstraintViolationException");
+            
+        }
+
     }
 
     @Test
