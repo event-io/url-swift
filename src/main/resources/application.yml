@@ -20,6 +20,11 @@ supabase:
       password: ${B62KG_PWD}
 
 quarkus:
+  arc:
+    dev-mode:
+      monitoring-enabled: true
+    test:
+      disable-application-lifecycle-observers: true
   log:
     category:
       "org.jboss.resteasy.reactive.client.logging":

@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.events.dto.LinkShorteningCreationDTO;
@@ -108,6 +109,7 @@ public class UrlSwiftServiceTest {
         }
     }
 
+    @Disabled("Disabled until RestClientException is implemented")
     @Test
     public void testGetInfo_WithSabouter_shouldHandleError() {
         fail("Not yet implemented");
@@ -166,6 +168,7 @@ public class UrlSwiftServiceTest {
         }
     }
 
+    @Disabled("Disabled until RestClientException is implemented")
     @Test
     public void testGetRedirectURL_WithSabouter_shouldHandleError() {
         fail("Not yet implemented");
@@ -229,16 +232,19 @@ public class UrlSwiftServiceTest {
 
     }
 
+    @Disabled("Disabled until RestClientException is implemented")
     @Test
     public void testCreateShortenedURL_shouldBeAConflict() {
         fail("Not yet implemented");
     }
 
+    @Disabled("Disabled until RestClientException is implemented")
     @Test
     public void testCreateShortenedURL_withB62KGSabouter_shouldHandlerError() {
         fail("Not yet implemented");
     }
 
+    @Disabled("Disabled until RestClientException is implemented")
     @Test
     public void testCreateShortenedURL_withSabouter_shouldHandlerError() {
         fail("Not yet implemented");
