@@ -20,6 +20,9 @@ supabase:
       password: ${B62KG_PWD}
 
 quarkus:
+  jacoco:
+   title: "URL Swift Coverage Analysis"
+   footer: "Author: Luca Corallo"
   arc:
     dev-mode:
       monitoring-enabled: true
