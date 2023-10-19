@@ -13,16 +13,19 @@ import io.events.configs.SupabaseBase62KeyGeneratorConfig;
 import io.events.configs.SupabaseUrlSwiftConfig;
 import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
+import io.events.exceptions.OriginalUrlMatchException;
+import io.events.exceptions.RedirectUrlMatchException;
 import io.events.restclients.Base62KeyGeneratorClient;
 import io.events.restclients.SupabaseClient;
 import io.events.restclients.SupabaseUrlSwiftClient;
 import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.Cancellable;
+import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
+import jakarta.validation.Valid;
 
 @ApplicationScoped
 public class UrlSwiftService {
@@ -41,7 +44,7 @@ public class UrlSwiftService {
 
     private SupabaseClient supabaseClient;
 
-    private String accessToken;
+    private String accessToken = ""; //Assigned only for testing purposes
 
     private Cancellable refreshTokenSubscription;
 
@@ -81,12 +84,10 @@ public class UrlSwiftService {
                 this.accessToken,
                 shortenedLink
             )
-        ).map(linkShorteningResponseDTO -> {
-            if (linkShorteningResponseDTO.isEmpty()) {
-                throw new NotFoundException("Not found resource URL with shortened link: " + shortenedLink);
-            }
+        ).map(Unchecked.function(linkShorteningResponseDTO -> {
+            if (linkShorteningResponseDTO.isEmpty()) throw new RedirectUrlMatchException();
             return linkShorteningResponseDTO.iterator().next().getOriginalLink();
-        });
+        }));
     }
 
     /**
@@ -100,12 +101,10 @@ public class UrlSwiftService {
                 this.accessToken,
                 originalURL
             )
-        ).map(linkShorteningResponseDTO -> {
-            if (linkShorteningResponseDTO.isEmpty()) {
-                throw new NotFoundException("Not found resource URL with shortened link: " + originalURL);
-            }
+        ).map(Unchecked.function(linkShorteningResponseDTO -> {
+            if (linkShorteningResponseDTO.isEmpty()) throw new OriginalUrlMatchException();
             return linkShorteningResponseDTO.iterator().next();
-        });
+        }));
 
     }
 
@@ -114,7 +113,7 @@ public class UrlSwiftService {
      * @param linkShorteningCreationDTO The DTO containing link information.
      * @return A Uni that resolves to the created link.
      */
-    public Uni<LinkShorteningCreationDTO> create(LinkShorteningCreationDTO linkShorteningCreationDTO) {
+    public Uni<LinkShorteningCreationDTO> create(@Valid LinkShorteningCreationDTO linkShorteningCreationDTO) {
         return Uni.createFrom().completionStage(
             this.base62KeyGeneratorClient.generateKey(accessToken)
         ).map(baseKeyDTO -> {

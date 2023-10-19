@@ -5,25 +5,29 @@ import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
+import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import io.events.configs.SupabaseBackendConfig;
 import io.events.dto.TokenRequestDTO;
 import io.events.dto.TokenResponseDTO;
+import io.events.factory.RequestUUIDHeaderFactory;
 import io.events.models.SupabaseGrantType;
 import io.quarkus.rest.client.reactive.NotBody;
 import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.Closeable;
-import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
-@Singleton
 @Path("/auth/v1")
+@RegisterRestClient(configKey = "supabase_auth")
+@RegisterClientHeaders(RequestUUIDHeaderFactory.class)
 @ClientHeaderParam(name = "apiKey", value = "{apiKey}")
 public interface SupabaseClient extends Closeable {
     
@@ -32,7 +36,7 @@ public interface SupabaseClient extends Closeable {
     @Consumes(MediaType.APPLICATION_JSON)
     CompletionStage<TokenResponseDTO> token(
         @QueryParam("grant_type") SupabaseGrantType grantType,
-        @NotBody String apiKey,
+        @HeaderParam("apiKey") String apiKey,
         TokenRequestDTO tokenRequestDTO);
     
     

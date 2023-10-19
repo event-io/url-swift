@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,5 +22,6 @@ public class LinkShorteningCreationDTO {
 
     @JsonProperty("shortened_link")
     @Length(min = 7, max = 7)
+    @Nullable
     private String shortnedLink;
 }
