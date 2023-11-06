@@ -31,8 +31,8 @@ public class UrlSwiftResource {
                 if(item.length() != 7 || !item.matches("[a-zA-Z0-9]*")) throw new IllegalArgumentException("Shortened link must be 7 characters and must respect regex [a-zA-Z0-9]*");
                 return item;
             })
-            .chain(sL -> Uni.createFrom().completionStage(this.urlSwiftService.getRedirectURL("eq."+shortenedLink).subscribeAsCompletionStage()))
-            .map(redirectURL -> Response.seeOther(URI.create(redirectURL)).build())
+            .chain(sL -> Uni.createFrom().completionStage(this.urlSwiftService.getInfo("eq."+shortenedLink).subscribeAsCompletionStage()))
+            .map(redirectURL -> Response.seeOther(URI.create(redirectURL.getOriginalLink())).build())
             .onFailure().recoverWithItem(failure -> {
                 if(failure instanceof IllegalArgumentException) return Response.status(Response.Status.BAD_REQUEST).entity(failure.getMessage()).build();
                 if(failure instanceof RedirectUrlMatchException) return Response.status(Response.Status.NOT_FOUND).entity(failure.getMessage()).build();
@@ -44,7 +44,18 @@ public class UrlSwiftResource {
     @Path("/i/{shortenedLink}")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> info(String shortenedLink) {
-        throw new NotImplementedYet();
+        return Uni.createFrom().item(shortenedLink)
+            .map(item -> {
+                if(item.length() != 7 || !item.matches("[a-zA-Z0-9]*")) throw new IllegalArgumentException("Shortened link must be 7 characters and must respect regex [a-zA-Z0-9]*");
+                return item;
+            })
+            .chain(sL -> Uni.createFrom().completionStage(this.urlSwiftService.getInfo("eq."+shortenedLink).subscribeAsCompletionStage()))
+            .map(info -> Response.ok(info).build())
+            .onFailure().recoverWithItem(failure -> {
+                if(failure instanceof IllegalArgumentException) return Response.status(Response.Status.BAD_REQUEST).entity(failure.getMessage()).build();
+                if(failure instanceof RedirectUrlMatchException) return Response.status(Response.Status.NOT_FOUND).entity(failure.getMessage()).build();
+                return Response.serverError().entity(failure.getMessage()).build();
+        });
     }
 
 

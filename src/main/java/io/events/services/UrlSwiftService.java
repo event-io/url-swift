@@ -71,13 +71,13 @@ public class UrlSwiftService {
     void onStop(@Observes StartupEvent ev) {
         // this.refreshTokenSubscription.cancel();
     }
-    
+
     /**
      * Retrieves the redirect URL for a given shortened link.
      * @param shortenedLink The shortened link.
      * @return A Uni that resolves to the redirect URL.
      */
-    public Uni<String> getRedirectURL(String shortenedLink) {
+    public Uni<LinkShorteningResponseDTO> getInfo(String shortenedLink) {
         return Uni.createFrom().completionStage(
             this.supabaseUrlSwiftClient.getByShortened(
                 this.accessToken,
@@ -85,26 +85,8 @@ public class UrlSwiftService {
             )
         ).map(linkShorteningResponseDTO -> {
             if (linkShorteningResponseDTO.isEmpty()) throw new RedirectUrlMatchException();
-            return linkShorteningResponseDTO.iterator().next().getOriginalLink();
-        });
-    }
-
-    /**
-     * Retrieves information about a shortened link.
-     * @param originalURL The original URL.
-     * @return A Uni that resolves to the link information.
-     */
-    public Uni<LinkShorteningResponseDTO> getInfo(String originalURL) {
-        return Uni.createFrom().completionStage(
-            this.supabaseUrlSwiftClient.getInfoByOriginal(
-                this.accessToken,
-                originalURL
-            )
-        ).map(linkShorteningResponseDTO -> {
-            if (linkShorteningResponseDTO.isEmpty()) throw new OriginalUrlMatchException();
             return linkShorteningResponseDTO.iterator().next();
         });
-
     }
 
     /**
