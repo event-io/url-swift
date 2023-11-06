@@ -21,7 +21,6 @@ import io.events.restclients.SupabaseUrlSwiftClient;
 import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.subscription.Cancellable;
-import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
@@ -84,10 +83,10 @@ public class UrlSwiftService {
                 this.accessToken,
                 shortenedLink
             )
-        ).map(Unchecked.function(linkShorteningResponseDTO -> {
+        ).map(linkShorteningResponseDTO -> {
             if (linkShorteningResponseDTO.isEmpty()) throw new RedirectUrlMatchException();
             return linkShorteningResponseDTO.iterator().next().getOriginalLink();
-        }));
+        });
     }
 
     /**
@@ -101,10 +100,10 @@ public class UrlSwiftService {
                 this.accessToken,
                 originalURL
             )
-        ).map(Unchecked.function(linkShorteningResponseDTO -> {
+        ).map(linkShorteningResponseDTO -> {
             if (linkShorteningResponseDTO.isEmpty()) throw new OriginalUrlMatchException();
             return linkShorteningResponseDTO.iterator().next();
-        }));
+        });
 
     }
 

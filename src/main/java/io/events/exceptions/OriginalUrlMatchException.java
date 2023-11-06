@@ -1,6 +1,6 @@
 package io.events.exceptions;
 
-public class OriginalUrlMatchException extends Exception {
+public class OriginalUrlMatchException extends RuntimeException {
 
     public OriginalUrlMatchException() {
         super("No original URL match found.");

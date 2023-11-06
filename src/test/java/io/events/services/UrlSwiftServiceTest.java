@@ -105,7 +105,7 @@ public class UrlSwiftServiceTest {
             RuntimeException exception = (RuntimeException) e.getCause();
 
             //Assert
-            assertEquals(RedirectUrlMatchException.class, exception.getCause().getClass(), "Should be equal");
+            assertEquals(RedirectUrlMatchException.class, exception.getClass(), "Should be equal");
         }
     }
 
@@ -164,7 +164,7 @@ public class UrlSwiftServiceTest {
             RuntimeException exception = (RuntimeException) e.getCause();
 
             //Assert
-            assertEquals(OriginalUrlMatchException.class, exception.getCause().getClass(), "Should be equal");
+            assertEquals(OriginalUrlMatchException.class, exception.getClass(), "Should be equal");
         }
     }
 
