@@ -19,6 +19,22 @@ jobs:
       - name: 'Checkout Repository'
         uses: actions/checkout@v4
 
+      - name: 'Setup env File'
+        run: |
+          touch .env
+          echo API_ENDPOINT="https://xxx.execute-api.us-west-2.amazonaws.com" >> .env
+          echo URL_SWIFT_HOST=${{ secrets.URL_SWIFT_HOST }} >> .env
+          echo URL_SWIFT_API_KEY=${{ secrets.URL_SWIFT_API_KEY }} >> .env
+          echo URL_SWIFT_SCHEMA=${{ secrets.URL_SWIFT_SCHEMA }} >> .env
+          echo URL_SWIFT_EMAIL=${{ secrets.URL_SWIFT_EMAIL }} >> .env
+          echo URL_SWIFT_PWD=${{ secrets.URL_SWIFT_PWD }} >> .env
+          echo B62KG_HOST=${{ secrets.B62KG_HOST }} >> .env
+          echo B62KG_API_KEY=${{ secrets.B62KG_API_KEY }} >> .env
+          echo B62KG_SCHEMA=${{ secrets.B62KG_SCHEMA }} >> .env
+          echo B62KG_EMAIL=${{ secrets.B62KG_EMAIL }} >> .env
+          echo B62KG_PWD=${{ secrets.B62KG_PWD }} >> .env
+          cat .env
+
       - name: Setup Java JDK
         uses: actions/setup-java@v3.13.0
         with:
