@@ -13,7 +13,6 @@ import io.events.configs.SupabaseBase62KeyGeneratorConfig;
 import io.events.configs.SupabaseUrlSwiftConfig;
 import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
-import io.events.exceptions.OriginalUrlMatchException;
 import io.events.exceptions.RedirectUrlMatchException;
 import io.events.restclients.Base62KeyGeneratorClient;
 import io.events.restclients.SupabaseClient;

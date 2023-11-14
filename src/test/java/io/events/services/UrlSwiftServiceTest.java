@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import io.events.dto.LinkShorteningCreationDTO;
 import io.events.dto.LinkShorteningResponseDTO;
 import io.events.dto.TokenRequestDTO;
-import io.events.exceptions.OriginalUrlMatchException;
 import io.events.exceptions.RedirectUrlMatchException;
 import io.events.mocks.MockBase62KeyGeneratorClient;
 import io.events.mocks.MockSupabaseClient;
@@ -75,8 +74,8 @@ public class UrlSwiftServiceTest {
         //Act
         String originalUrl = "";
         try {
-            originalUrl = urlSwiftService.getRedirectURL(happyPathShortenedUrl)
-                .subscribeAsCompletionStage().get();
+            originalUrl = urlSwiftService.getInfo(happyPathShortenedUrl)
+                .subscribeAsCompletionStage().get().getOriginalLink();
         } catch (InterruptedException|ExecutionException e) {
             fail("Should not fail");
         }
@@ -98,7 +97,7 @@ public class UrlSwiftServiceTest {
         
         //Act
         try {
-            urlSwiftService.getRedirectURL(shortenedUrl)
+            urlSwiftService.getInfo(shortenedUrl)
                 .subscribeAsCompletionStage().get();
             fail("Should be thrown an exception");
         } catch (InterruptedException|ExecutionException e) {
@@ -118,7 +117,7 @@ public class UrlSwiftServiceTest {
     @Test
     public void testGetInfo_shouldReceiveInfo() {
         //Mock
-        when(mockSupabaseUrlSwiftClient.getInfoByOriginal(
+        when(mockSupabaseUrlSwiftClient.getByShortened(
             anyString(),
             anyString()
         )).thenReturn(MockSupabaseUrlSwiftClient.mockGetByShortenedResponseHappyPath());
@@ -147,7 +146,7 @@ public class UrlSwiftServiceTest {
     @Test
     public void testGetInfo_shouldNotFound() {
         //Mock        
-        when(mockSupabaseUrlSwiftClient.getInfoByOriginal(
+        when(mockSupabaseUrlSwiftClient.getByShortened(
             anyString(),
             anyString()
         )).thenReturn(MockSupabaseUrlSwiftClient.mockGetByShortenedResponseSadPath());
@@ -164,7 +163,7 @@ public class UrlSwiftServiceTest {
             RuntimeException exception = (RuntimeException) e.getCause();
 
             //Assert
-            assertEquals(OriginalUrlMatchException.class, exception.getClass(), "Should be equal");
+            assertEquals(RedirectUrlMatchException.class, exception.getClass(), "Should be equal");
         }
     }
 
