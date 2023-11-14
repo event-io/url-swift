@@ -63,7 +63,10 @@ public class UrlSwiftResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> create(@Valid LinkShorteningCreationDTO linkShorteningCreationDTO) {
-        throw new NotImplementedYet();
+        return Uni.createFrom().item(linkShorteningCreationDTO)
+            .chain(dto -> Uni.createFrom().completionStage(this.urlSwiftService.create(dto).subscribeAsCompletionStage()))
+            .map(response -> Response.ok(response).build())
+            .onFailure().recoverWithItem(failure ->  Response.serverError().entity(failure.getMessage()).build());
     }
 
 }
