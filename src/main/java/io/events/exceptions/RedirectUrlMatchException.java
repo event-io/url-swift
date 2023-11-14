@@ -1,6 +1,6 @@
 package io.events.exceptions;
 
-public class RedirectUrlMatchException extends Exception {
+public class RedirectUrlMatchException extends RuntimeException {
 
     public RedirectUrlMatchException() {
         super("No redirect URL match found.");
