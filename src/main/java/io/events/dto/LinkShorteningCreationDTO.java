@@ -19,7 +19,7 @@ public class LinkShorteningCreationDTO {
     @JsonProperty("original_link")
     @NotBlank
     @Length(max = 512)
-    @Pattern(regexp = "^(http|https)://[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(:[0-9]{1,5})?(/.*)?$", message = "Invalid URL")
+    @Pattern(regexp = "^(http|https)://([a-zA-Z0-9-.]*)(:[0-9]{1,5})?(/.*)?$", message = "Invalid URL")
     private String originalLink;
 
     @JsonProperty("shortened_link")
