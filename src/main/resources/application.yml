@@ -1,6 +1,3 @@
-greeting:
-  message: "hello"
-
 supabase:
   url_swift:
     host: ${URL_SWIFT_HOST}
@@ -20,6 +17,18 @@ supabase:
       password: ${B62KG_PWD}
 
 quarkus:
+  swagger-ui:
+    always-include: true
+    path: /swagger
+  smallrye-openapi:
+    info-title: URL Swift
+    info-description: URL Swift is a service that allows you to shorten URLs.
+    info-version: 1.0.0
+    info-contact-name: Luca Corallo
+    info-contact-email: corallo.luca@outlook.com
+    info-contact-url: https://github.com/event-io/url-swift   
+    store-schema-directory: target/
+
   jacoco:
    title: "URL Swift Coverage Analysis"
    footer: "Author: Luca Corallo"

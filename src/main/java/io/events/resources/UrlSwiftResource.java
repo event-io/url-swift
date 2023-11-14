@@ -2,9 +2,14 @@ package io.events.resources;
 
 import java.net.URI;
 
-import org.jboss.resteasy.reactive.common.NotImplementedYet;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 import io.events.dto.LinkShorteningCreationDTO;
+import io.events.dto.LinkShorteningResponseDTO;
 import io.events.exceptions.RedirectUrlMatchException;
 import io.events.services.UrlSwiftService;
 import io.smallrye.mutiny.Uni;
@@ -18,6 +23,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 @Path("/url-swift")
+@Schema(name = "Url Swift", description = "Url Swift OpenAPI")
 public class UrlSwiftResource {
 
     @Inject
@@ -25,6 +31,11 @@ public class UrlSwiftResource {
     
     @GET
     @Path("/r/{shortenedLink}")
+    @APIResponses(value = {
+        @APIResponse(responseCode = "302", description = "Redirect to original URL",
+            content = @Content(mediaType = "text/plain", 
+            schema = @Schema(implementation = String.class, example = "http://your-domain.com")))
+    })
     public Uni<Response> redirect(String shortenedLink) {
         return Uni.createFrom().item(shortenedLink)
             .map(item -> {
@@ -43,6 +54,11 @@ public class UrlSwiftResource {
     @GET
     @Path("/i/{shortenedLink}")
     @Produces(MediaType.APPLICATION_JSON)
+    @APIResponses(value = {
+        @APIResponse(responseCode = "200", description = "Get link information",
+            content = @Content(mediaType = "application/json", 
+            schema = @Schema(implementation = LinkShorteningResponseDTO.class, example = "{\"originalLink\": \"http://your-domain.com\", \"shortenedLink\": \"abcdefg\", \"createdAt\": \"2021-08-01T00:00:00.000Z\"}")))
+    })
     public Uni<Response> info(String shortenedLink) {
         return Uni.createFrom().item(shortenedLink)
             .map(item -> {
@@ -62,6 +78,7 @@ public class UrlSwiftResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = LinkShorteningCreationDTO.class, example = "{\"originalLink\": \"http://your-domain.com\"}")))
     public Uni<Response> create(@Valid LinkShorteningCreationDTO linkShorteningCreationDTO) {
         return Uni.createFrom().item(linkShorteningCreationDTO)
             .chain(dto -> Uni.createFrom().completionStage(this.urlSwiftService.create(dto).subscribeAsCompletionStage()))
