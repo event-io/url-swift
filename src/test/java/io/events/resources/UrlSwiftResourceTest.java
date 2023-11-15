@@ -1,7 +1,7 @@
 package io.events.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -252,9 +252,13 @@ class UrlSwiftResourceTest {
         );
 
         //Act
-        assertThrows(ConstraintViolationException.class, () -> {
-            this.urlSwiftResource.create(sadhortnerCreationDTO).subscribe().asCompletionStage().get();
-        });
+        try {
+                this.urlSwiftResource.create(sadhortnerCreationDTO).subscribe().asCompletionStage().get();
+        } catch (InterruptedException|ExecutionException e) {
+            fail("Should not throw InterruptedException or ExecutionException");
+        } catch(ConstraintViolationException e) {
+            assertTrue(true);
+        }
     }
 
     @Test

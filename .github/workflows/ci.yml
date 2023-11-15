@@ -160,7 +160,7 @@ jobs:
           # Comma separated list of goals to execute
           #goals: # optional
           # Comma separated list of phases to execute
-          phases: clean, verify
+          phases: clean, test
 
 
       # - name: Set up Maven 3.9.4
@@ -199,6 +199,10 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: Generate Jacoco Report
+        run: mvn verify
+
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
