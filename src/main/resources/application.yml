@@ -20,6 +20,11 @@ quarkus:
   swagger-ui:
     always-include: true
     path: /swagger
+
+  smallrye-metrics:
+    path: /metrics
+    enabled: true
+
   smallrye-openapi:
     info-title: URL Swift
     info-description: URL Swift is a service that allows you to shorten URLs.
@@ -32,15 +37,18 @@ quarkus:
   jacoco:
    title: "URL Swift Coverage Analysis"
    footer: "Author: Luca Corallo"
+
   arc:
     dev-mode:
       monitoring-enabled: true
     test:
       disable-application-lifecycle-observers: true
+
   log:
     category:
       "org.jboss.resteasy.reactive.client.logging":
         level: DEBUG
+
   rest-client:
     logging:
       scope: request-response

@@ -2,6 +2,11 @@ package io.events.resources;
 
 import java.net.URI;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.ConcurrentGauge;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
@@ -31,6 +36,22 @@ public class UrlSwiftResource {
     
     @GET
     @Path("/r/{shortenedLink}")
+    @Counted(name = "counted-redirects", absolute = true, description = "Number of redirects")
+    @Timed(
+        name = "timed-redirects",
+        description = "A measure of how long it takes to redirect to original URL",
+        unit = MetricUnits.MILLISECONDS
+    )
+    @Gauge(
+        name = "gauge-redirects",
+        description = "Number of redirects",
+        unit = MetricUnits.MINUTES
+    )
+    @ConcurrentGauge(
+        name = "concurrent-gauge-redirects",
+        description = "Number of concurrent redirects",
+        unit = MetricUnits.MINUTES
+    )
     @APIResponses(value = {
         @APIResponse(responseCode = "302", description = "Redirect to original URL",
             content = @Content(mediaType = "text/plain", 
@@ -54,6 +75,22 @@ public class UrlSwiftResource {
     @GET
     @Path("/i/{shortenedLink}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Counted(name = "counted-infos", absolute = true, description = "Number of infos")
+    @Timed(
+        name = "timed-infos",
+        description = "A measure of how long it takes to redirect to original URL",
+        unit = MetricUnits.MILLISECONDS
+    )
+    @Gauge(
+        name = "gauge-infos",
+        description = "Number of infos",
+        unit = MetricUnits.MINUTES
+    )
+    @ConcurrentGauge(
+        name = "concurrent-gauge-infos",
+        description = "Number of concurrent infos",
+        unit = MetricUnits.MINUTES
+    )
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "Get link information",
             content = @Content(mediaType = "application/json", 
@@ -78,6 +115,22 @@ public class UrlSwiftResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Counted(name = "counted-creations", absolute = true, description = "Number of creations")
+    @Timed(
+        name = "timed-creations",
+        description = "A measure of how long it takes to redirect to original URL",
+        unit = MetricUnits.MILLISECONDS
+    )
+    @Gauge(
+        name = "gauge-creations",
+        description = "Number of creations",
+        unit = MetricUnits.MINUTES
+    )
+    @ConcurrentGauge(
+        name = "concurrent-gauge-creations",
+        description = "Number of concurrent creations",
+        unit = MetricUnits.MINUTES
+    )
     @RequestBody(content = @Content(mediaType = "application/json", schema = @Schema(implementation = LinkShorteningCreationDTO.class, example = "{\"originalLink\": \"http://your-domain.com\"}")))
     public Uni<Response> create(@Valid LinkShorteningCreationDTO linkShorteningCreationDTO) {
         return Uni.createFrom().item(linkShorteningCreationDTO)
