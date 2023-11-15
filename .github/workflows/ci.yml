@@ -162,6 +162,12 @@ jobs:
           # Comma separated list of phases to execute
           phases: clean, verify
 
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v2
+        with:
+          name: jacoco-report
+          path: target/jacoco-report
+
 
       # - name: Set up Maven 3.9.4
       #   uses: stCarolas/setup-maven@v4.5
@@ -199,6 +205,12 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: Download JaCoCo report
+        uses: actions/download-artifact@v2
+        with:
+          name: jacoco-report
+
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any

@@ -32,7 +32,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolationException;
 @QuarkusTest
-public class UrlSwiftServiceTest {
+class UrlSwiftServiceTest {
 
     @InjectMock
     @RestClient
@@ -50,7 +50,7 @@ public class UrlSwiftServiceTest {
     private UrlSwiftService urlSwiftService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         //Mock
         when(mockSupabaseClient.token(
             any(),
@@ -60,7 +60,7 @@ public class UrlSwiftServiceTest {
     }
 
     @Test
-    public void testGetRedirectURL_shouldReceiveURL() {
+    void testGetRedirectURL_shouldReceiveURL() {
         //Mock
         when(mockSupabaseUrlSwiftClient.getByShortened(
             anyString(),
@@ -85,7 +85,7 @@ public class UrlSwiftServiceTest {
     }
 
     @Test
-    public void testGetRedirectURL_shouldNotFound() {
+    void testGetRedirectURL_shouldNotFound() {
         //Mock        
         when(mockSupabaseUrlSwiftClient.getByShortened(
             anyString(),
@@ -110,12 +110,12 @@ public class UrlSwiftServiceTest {
 
     @Disabled("Disabled until RestClientException is implemented")
     @Test
-    public void testGetInfo_WithSabouter_shouldHandleError() {
+    void testGetInfo_WithSabouter_shouldHandleError() {
         fail("Not yet implemented");
     }
 
     @Test
-    public void testGetInfo_shouldReceiveInfo() {
+    void testGetInfo_shouldReceiveInfo() {
         //Mock
         when(mockSupabaseUrlSwiftClient.getByShortened(
             anyString(),
@@ -144,7 +144,7 @@ public class UrlSwiftServiceTest {
     }
 
     @Test
-    public void testGetInfo_shouldNotFound() {
+    void testGetInfo_shouldNotFound() {
         //Mock        
         when(mockSupabaseUrlSwiftClient.getByShortened(
             anyString(),
@@ -169,12 +169,12 @@ public class UrlSwiftServiceTest {
 
     @Disabled("Disabled until RestClientException is implemented")
     @Test
-    public void testGetRedirectURL_WithSabouter_shouldHandleError() {
+    void testGetRedirectURL_WithSabouter_shouldHandleError() {
         fail("Not yet implemented");
     }
 
     @Test
-    public void testCreateShortenedURL_shouldReceiveURL() {
+    void testCreateShortenedURL_shouldReceiveURL() {
         //Mock
         when(mockBase62KeyGeneratorClient.generateKey(""))
             .thenReturn(MockBase62KeyGeneratorClient.mockKeyGenerationResponseHappyPath());
@@ -206,7 +206,7 @@ public class UrlSwiftServiceTest {
     }
 
     @Test
-    public void testCreateShortenedURL_shouldBeInputIncorrect() {
+    void testCreateShortenedURL_shouldBeInputIncorrect() {
         when(mockBase62KeyGeneratorClient.generateKey(""))
             .thenThrow(new RuntimeException("Base62KeyGenerator method should not be called"));
 
@@ -233,19 +233,19 @@ public class UrlSwiftServiceTest {
 
     @Disabled("Disabled until RestClientException is implemented")
     @Test
-    public void testCreateShortenedURL_shouldBeAConflict() {
+    void testCreateShortenedURL_shouldBeAConflict() {
         fail("Not yet implemented");
     }
 
     @Disabled("Disabled until RestClientException is implemented")
     @Test
-    public void testCreateShortenedURL_withB62KGSabouter_shouldHandlerError() {
+    void testCreateShortenedURL_withB62KGSabouter_shouldHandlerError() {
         fail("Not yet implemented");
     }
 
     @Disabled("Disabled until RestClientException is implemented")
     @Test
-    public void testCreateShortenedURL_withSabouter_shouldHandlerError() {
+    void testCreateShortenedURL_withSabouter_shouldHandlerError() {
         fail("Not yet implemented");
     }
     
