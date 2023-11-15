@@ -160,7 +160,13 @@ jobs:
           # Comma separated list of goals to execute
           #goals: # optional
           # Comma separated list of phases to execute
-          phases: clean, test
+          phases: clean, verify
+
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v2
+        with:
+          name: jacoco-report
+          path: target/jacoco-report
 
 
       # - name: Set up Maven 3.9.4
@@ -200,8 +206,10 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Generate Jacoco Report
-        run: mvn verify
+      - name: Download JaCoCo report
+        uses: actions/download-artifact@v2
+        with:
+          name: jacoco-report
 
       - name: Build and analyze
         env:
