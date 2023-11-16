@@ -199,7 +199,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: jacoco-report
-          path: target/jacoco-report
+          path: target/site/jacoco
           
 
       - name: Cache SonarCloud packages
