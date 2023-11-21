@@ -1,0 +1,9 @@
+name: url-swift-dockerfile
+services:
+  - dockerfile_path: Dockerfile
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: event-io/url-swift
+    name: url-swift
+    http_port: 8080
