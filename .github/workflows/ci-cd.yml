@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   pull_request:
@@ -180,9 +180,9 @@ jobs:
       # - name: Run Unit Tests
       #   run: mvn test -Dtest="UrlSwiftServiceTest" -DfailIfNoTests=false
 
-  build:
+  generate_quality_report:
     needs: unit_test
-    name: Build and analyze
+    name: Generate quality report
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -221,3 +221,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -DskipTests=true
+  
+  build:
+    needs: generate_quality_report
+    name: Build Native Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build native image
+        run: mvn clean install -Dnative -Dquarkus.native.container-build=true -DskipTests=true
+      
+      - name: Upload native image
+        uses: actions/upload-artifact@v2
+        with:
+          name: url-swift-native
+          path: target/url-swift-1.0.0-native-image-source-jar
