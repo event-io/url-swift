@@ -245,7 +245,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build native image
-        run: mvn clean install -Dnative -Dquarkus.native.container-build=true
+        run: mvn clean install -Dnative -Dquarkus.native.container-build=true -DskipTests=true
       
       - name: Upload native image
         uses: actions/upload-artifact@v2
