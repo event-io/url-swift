@@ -2,7 +2,7 @@ name: url-swift-dockerfile
 services:
   - dockerfile_path: Dockerfile
     github:
-      branch: dev/delivery
+      branch: main
       deploy_on_push: true
       repo: event-io/url-swift
     name: url-swift
