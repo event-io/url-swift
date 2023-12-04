@@ -1,6 +1,17 @@
 ## Stage 1 : build with maven builder image with native capabilities
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS build
 
+ENV URL_SWIFT_HOST=$URL_SWIFT_HOST
+ENV URL_SWIFT_API_KEY=$URL_SWIFT_API_KEY
+ENV URL_SWIFT_SCHEMA=$URL_SWIFT_SCHEMA
+ENV URL_SWIFT_EMAIL=$URL_SWIFT_EMAIL
+ENV URL_SWIFT_PWD=$URL_SWIFT_PWD
+ENV B62KG_HOST=$B62KG_HOST
+ENV B62KG_API_KEY=$B62KG_API_KEY
+ENV B62KG_SCHEMA=$B62KG_SCHEMA
+ENV B62KG_EMAIL=$B62KG_EMAIL
+ENV B62KG_PWD=$B62KG_PWD
+
 COPY --chown=quarkus:quarkus mvnw /code/mvnw
 # make /code/mvnw executable by quarkus user
 RUN chmod +x /code/mvnw
